@@ -1,5 +1,7 @@
 # Two Pointers
 
+### PseudoCode
+
 ```bash
 function fn(arr):
     left = 0
