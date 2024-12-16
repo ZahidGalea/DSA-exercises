@@ -1,87 +1,76 @@
-# Sliding Window
+Te explico la técnica de Sliding Window (Ventana Deslizante), que es muy útil para problemas que involucran subarreglos
+o subcadenas contiguos.
 
-ubarrays
-Given an array, a subarray is a contiguous section of the array. All the elements must be adjacent to each other in the
-original array and in their original order. For example, with the array [1, 2, 3, 4], the subarrays (grouped by length)
-are:
+La idea básica es mantener una "ventana" que se desliza sobre los datos, donde la ventana representa el subconjunto
+actual que estamos considerando.
 
-```
-[1], [2], [3], [4]
-[1, 2], [2, 3], [3, 4]
-[1, 2, 3], [2, 3, 4]
-[1, 2, 3, 4]
-```
+Hay dos tipos principales:
 
-![img.png](img.png)
+1. Ventana de Tamaño Fijo:
 
-**Sliding window**
+```python
+def ventanaFija(arr, k):
+    n = len(arr)
+    # Procesar primera ventana
+    ventana = arr[0:k]
+    resultado = [sum(ventana)]
 
-Usa two pointers.
+    # Deslizar ventana
+    for i in range(k, n):
+        # Añadir nuevo elemento y quitar el primero
+        ventana = ventana[1:] + [arr[i]]
+        resultado.append(sum(ventana))
 
-Subarray: seccion continua de un array.
-
-Cuando usar un sliding Window?
-
-* Explicitamente pide un subarray valido o substring.
-    * Cuando pide un subarray valido o substring.
-    * Restriccion numerica en tu contraint metric.
-* Pide encontrar un subarray de alguan forma.
-    * el mas comun es best valid subarray.
-    * encontrar el numero de arrays validos.
-
-**El algoritmo**
-
-* No crear array nuevos
-* Mantener la metrica en una variable
-* Modificar la metrica para que cumpla la restriccion numerica
-
-**Es eficiente porque:**
-
-* Buscar por cada subarray es mini On2. Sliding windows puede ser O1 o On.
-
-```bash
-function fn(nums, k):
-    left = 0
-    curr = 0
-    answer = 0
-    for (int right = 0; right < nums.length; right++):
-        curr += nums[right]
-        while (curr > k):
-            curr -= nums[left]
-            left++
-
-        answer = max(answer, right - left + 1)
-
-    return answer
-```
-```bash
-function fn(arr):
-    left = 0
-    for (int right = 0; right < arr.length; right++):
-        Do some logic to "add" element at arr[right] to window
-
-        while WINDOW_IS_INVALID:
-            Do some logic to "remove" element at arr[left] from window
-            left++
-
-        Do some logic to update the answer
+    return resultado
 ```
 
-** Fixed Window**
+2. Ventana de Tamaño Variable:
 
-```bash
-function fn(arr, k):
-    curr = some data to track the window
+```python
+def ventanaVariable(arr, target):
+    inicio = 0
+    suma_actual = 0
+    min_longitud = float('inf')
 
-    // build the first window
-    for (int i = 0; i < k; i++)
-        Do something with curr or other variables to build first window
+    for fin in range(len(arr)):
+        suma_actual += arr[fin]
 
-    ans = answer variable, probably equal to curr here depending on the problem
-    for (int i = k; i < arr.length; i++)
-        Add arr[i] to window
-        Remove arr[i - k] from window
-        Update ans
+        # Contraer ventana mientras cumplamos condición
+        while suma_actual >= target:
+            min_longitud = min(min_longitud, fin - inicio + 1)
+            suma_actual -= arr[inicio]
+            inicio += 1
 
-    return ans
+    return min_longitud
 ```
+
+Patrón general para problemas de ventana deslizante:
+
+```
+inicio = 0
+for fin in range(len(array)):
+    # 1. Expandir: añadir elemento en posición 'fin'
+    
+    # 2. Contraer: mientras la ventana viole condición
+    while ventana_necesita_contraerse:
+        # remover elemento en posición 'inicio'
+        inicio += 1
+    
+    # 3. Actualizar resultado si es necesario
+```
+
+Casos comunes donde se usa:
+
+- Encontrar el subarreglo más largo/corto que cumple una condición
+- Calcular máximos/mínimos en subarreglos de tamaño k
+- Encontrar todas las subcadenas que contienen ciertos caracteres
+- Problemas de límite o suma máxima en subarreglos
+
+Tips para entrevistas:
+
+1. Identifica si necesitas ventana fija o variable
+2. Piensa en las condiciones para expandir y contraer
+3. Ten cuidado con los índices al actualizar la ventana
+4. Considera casos edge: array vacío, k = 0, etc.
+
+¿Te gustaría ver algún ejemplo específico de un problema que use sliding window?
