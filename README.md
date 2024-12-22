@@ -31,3 +31,14 @@ This is an active learning project. New implementations and topics will be added
 ## License
 
 This project is open source and available for anyone looking to learn DSA concepts.
+
+
+### Glossary:
+
+- Array: A collection of elements of the same type, stored in contiguous memory locations.
+- String: A sequence of characters, stored as an array of characters.
+- Prefix Sum: A technique that allows us to calculate the sum of any range in an array efficiently, with a time complexity of O(1) after preprocessing.
+- Sliding Window: A technique that allows us to perform operations on a window of elements in an array, with a time complexity of O(n).
+- Fixed Window: A technique that allows us to perform operations on a window of elements in an array, with a time complexity of O(1).
+- Subset: A subset is any set of elements from the original array or string. The order doesn't matter and neither do the elements being beside each other
+- Subsequences: A subsequence is a set of elements of an array/string that keeps the same relative order but doesn't need to be contiguous.
