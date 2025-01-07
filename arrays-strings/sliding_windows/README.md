@@ -1,76 +1,87 @@
-Te explico la técnica de Sliding Window (Ventana Deslizante), que es muy útil para problemas que involucran subarreglos
-o subcadenas contiguos.
+Like two pointers, sliding windows work the same with arrays and strings - the important thing is that they're iterables
+with ordered elements. For the sake of brevity, the first part of this article up until the examples will be focusing on
+arrays. However, all the logic is identical for strings.
 
-La idea básica es mantener una "ventana" que se desliza sobre los datos, donde la ventana representa el subconjunto
-actual que estamos considerando.
+Subarrays
+Given an array, a subarray is a contiguous section of the array. All the elements must be adjacent to each other in the original array and in their original order. For example, with the array [1, 2, 3, 4], the subarrays (grouped by length) are:
 
-Hay dos tipos principales:
+When should we use sliding window?
+There is a very common group of problems involving subarrays that can be solved efficiently with sliding window. Let's talk about how to identify these problems.
 
-1. Ventana de Tamaño Fijo:
+First, the problem will either explicitly or implicitly define criteria that make a subarray "valid". There are 2 components regarding what makes a subarray valid:
+
+
+```bash
+function fn(nums, k):
+    left = 0
+    curr = 0
+    answer = 0
+    for (int right = 0; right < nums.length; right++):
+        curr += nums[right]
+        while (curr > k):
+            curr -= nums[left]
+            left++
+
+        answer = max(answer, right - left + 1)
+
+    return answer
+```
+```bash
+function fn(arr):
+    left = 0
+    for (int right = 0; right < arr.length; right++):
+        Do some logic to "add" element at arr[right] to window
+
+        while WINDOW_IS_INVALID:
+            Do some logic to "remove" element at arr[left] from window
+            left++
+
+        Do some logic to update the answer
+```
+
+```bash
+def find_length(nums, k):
+    # curr is the current sum of the window
+    left = curr = ans = 0
+    for right in range(len(nums)):
+        curr += nums[right]
+        while curr > k:
+            curr -= nums[left]
+            left += 1
+        ans = max(ans, right - left + 1)
+    
+    return ans
+```
+
+Fixed Window Size:
+
+```bash
+function fn(arr, k):
+    curr = some data to track the window
+
+    // build the first window
+    for (int i = 0; i < k; i++)
+        Do something with curr or other variables to build first window
+
+    ans = answer variable, probably equal to curr here depending on the problem
+    for (int i = k; i < arr.length; i++)
+        Add arr[i] to window
+        Remove arr[i - k] from window
+        Update ans
+
+    return ans
+```
 
 ```python
-def ventanaFija(arr, k):
-    n = len(arr)
-    # Procesar primera ventana
-    ventana = arr[0:k]
-    resultado = [sum(ventana)]
-
-    # Deslizar ventana
-    for i in range(k, n):
-        # Añadir nuevo elemento y quitar el primero
-        ventana = ventana[1:] + [arr[i]]
-        resultado.append(sum(ventana))
-
-    return resultado
-```
-
-2. Ventana de Tamaño Variable:
-
-```python
-def ventanaVariable(arr, target):
-    inicio = 0
-    suma_actual = 0
-    min_longitud = float('inf')
-
-    for fin in range(len(arr)):
-        suma_actual += arr[fin]
-
-        # Contraer ventana mientras cumplamos condición
-        while suma_actual >= target:
-            min_longitud = min(min_longitud, fin - inicio + 1)
-            suma_actual -= arr[inicio]
-            inicio += 1
-
-    return min_longitud
-```
-
-Patrón general para problemas de ventana deslizante:
-
-```
-inicio = 0
-for fin in range(len(array)):
-    # 1. Expandir: añadir elemento en posición 'fin'
+def find_best_subarray(nums, k):
+    curr = 0
+    for i in range(k):
+        curr += nums[i]
     
-    # 2. Contraer: mientras la ventana viole condición
-    while ventana_necesita_contraerse:
-        # remover elemento en posición 'inicio'
-        inicio += 1
+    ans = curr
+    for i in range(k, len(nums)):
+        curr += nums[i] - nums[i - k]
+        ans = max(ans, curr)
     
-    # 3. Actualizar resultado si es necesario
+    return ans
 ```
-
-Casos comunes donde se usa:
-
-- Encontrar el subarreglo más largo/corto que cumple una condición
-- Calcular máximos/mínimos en subarreglos de tamaño k
-- Encontrar todas las subcadenas que contienen ciertos caracteres
-- Problemas de límite o suma máxima en subarreglos
-
-Tips para entrevistas:
-
-1. Identifica si necesitas ventana fija o variable
-2. Piensa en las condiciones para expandir y contraer
-3. Ten cuidado con los índices al actualizar la ventana
-4. Considera casos edge: array vacío, k = 0, etc.
-
-¿Te gustaría ver algún ejemplo específico de un problema que use sliding window?

@@ -1,52 +1,45 @@
-# Prefix Sum
+Prefix sum is a technique that can be used on arrays (of numbers). The idea is to create an array prefix where prefix[i] is the sum of all elements up to the index i (inclusive). For example, given nums = [5, 2, 1, 6, 3, 8], we would have prefix = [5, 7, 8, 14, 17, 25].
 
-El prefix sum es una técnica que nos permite calcular la suma de cualquier rango en un array de manera eficiente, con
-complejidad O(1) después del preprocesamiento.
+Prefix sums allow us to find the sum of any subarray in 
+O
+(
+1
+)
+O(1). If we want the sum of the subarray from i to j (inclusive), then the answer is prefix[j] - prefix[i - 1], or prefix[j] - prefix[i] + nums[i] if you don't want to deal with the out of bounds case when i = 0.
 
-Te lo explico paso a paso:
+```bash
+Given an array nums,
 
-1) Primero, creamos un nuevo array donde cada posición contiene la suma de todos los elementos anteriores incluyendo el
-   actual.
-
-Por ejemplo:
+prefix = [nums[0]]
+for (int i = 1; i < nums.length; i++)
+    prefix.append(nums[i] + prefix[prefix.length - 1])
+```
 
 ```python
-# Array original
-arr = [3, 1, 4, 2, 5]
-# Prefix sum
-prefix = [3, 4, 8, 10, 15]
-# Donde prefix[i] = arr[0] + arr[1] + ... + arr[i]
-```
-
-Aquí está el pseudo código para construir el prefix sum:
-
-```
-función construirPrefixSum(arr):
-    n = longitud(arr)
-    prefix = nuevo array de tamaño n
-    prefix[0] = arr[0]
+def answer_queries(nums, queries, limit):
+    prefix = [nums[0]]
+    for i in range(1, len(nums)):
+        prefix.append(nums[i] + prefix[-1])
     
-    para i desde 1 hasta n-1:
-        prefix[i] = prefix[i-1] + arr[i]
-    
-    retornar prefix
+    ans = []
+    for x, y in queries:
+        curr = prefix[y] - prefix[x] + nums[x]
+        ans.append(curr < limit)
+
+    return ans
 ```
 
-La belleza del prefix sum es que podemos encontrar la suma de cualquier rango [L,R] en O(1) usando:
+```python
+class Solution:
+    def waysToSplitArray(self, nums: List[int]) -> int:
+        ans = left_section = 0
+        total = sum(nums)
 
+        for i in range(len(nums) - 1):
+            left_section += nums[i]
+            right_section = total - left_section
+            if left_section >= right_section:
+                ans += 1
+
+        return ans
 ```
-sumaRango(L, R) = prefix[R] - prefix[L-1]  # si L > 0
-sumaRango(0, R) = prefix[R]  # si L = 0
-```
-
-Este concepto es fundamental para resolver problemas más complejos, como:
-
-- Encontrar subarrays con suma específica
-- Calcular promedios móviles
-- Problemas de ventana deslizante
-
-¿Te gustaría que te muestre un problema específico donde se aplica este concepto? O ¿tienes alguna duda sobre cómo
-funciona?
-
-Un consejo para las entrevistas: asegúrate de manejar bien los casos edge, como arrays vacíos o cuando L = 0 en las
-consultas de rango.

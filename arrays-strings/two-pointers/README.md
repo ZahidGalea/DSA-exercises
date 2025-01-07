@@ -1,103 +1,90 @@
-Te explico la técnica de dos punteros (Two Pointers), que es muy útil para problemas que involucran búsqueda de pares o
-manipulación de arrays/strings.
+Two pointers is an extremely common technique used to solve array and string problems. 
+It involves having two integer variables that both move along an iterable. In this article, we are focusing on arrays and strings. This means we will have two integers, usually named something like i and j, or left and right which each represent an index of the array or string.
 
-Hay varios patrones comunes de dos punteros:
+```bash
+function fn(arr):
+    left = 0
+    right = arr.length - 1
 
-1. Punteros desde extremos opuestos:
+    while left < right:
+        Do some logic here depending on the problem
+        Do some more logic here to decide on one of the following:
+            1. left++
+            2. right--
+            3. Both left++ and right--
+```
 
 ```python
-def dosExtremos(arr):
-    izq = 0
-    der = len(arr) - 1
+def check_if_palindrome(s):
+    left = 0
+    right = len(s) - 1
 
-    while izq < der:
-        # Procesar arr[izq] y arr[der]
-        if condicion:
-            izq += 1
+    while left < right:
+        if s[left] != s[right]:
+            return False
+        left += 1
+        right -= 1
+
+    return True
+
+```
+
+Another way to use two pointers
+This method where we start the pointers at the first and last indices and move them towards each other is only one way to implement two pointers. Algorithms are beautiful because of how abstract they are - "two pointers" is just an idea, and it can be implemented in many different ways. Let's look at another method and some new examples. The following method is applicable when the problem has two iterables in the input, for example, two arrays.
+
+```bash
+function fn(arr1, arr2):
+    i = j = 0
+    while i < arr1.length AND j < arr2.length:
+        Do some logic here depending on the problem
+        Do some more logic here to decide on one of the following:
+            1. i++
+            2. j++
+            3. Both i++ and j++
+
+    // Step 4: make sure both iterables are exhausted
+    // Note that only one of these loops would run
+    while i < arr1.length:
+        Do some logic here depending on the problem
+        i++
+
+    while j < arr2.length:
+        Do some logic here depending on the problem
+        j++
+```
+
+```python
+def combine(arr1, arr2):
+    # ans is the answer
+    ans = []
+    i = j = 0
+    while i < len(arr1) and j < len(arr2):
+        if arr1[i] < arr2[j]:
+            ans.append(arr1[i])
+            i += 1
         else:
-            der -= 1
+            ans.append(arr2[j])
+            j += 1
+    
+    while i < len(arr1):
+        ans.append(arr1[i])
+        i += 1
+    
+    while j < len(arr2):
+        ans.append(arr2[j])
+        j += 1
+    
+    return ans
 ```
-
-2. Punteros con diferente velocidad (rápido y lento):
 
 ```python
-def dosVelocidades(arr):
-    lento = 0
-    rapido = 0
+class Solution:
+    def isSubsequence(self, s: str, t: str) -> bool:
+        i = j = 0
+        while i < len(s) and j < len(t):
+            if s[i] == t[j]:
+                i += 1
+            j += 1
 
-    while rapido < len(arr):
-        if condicion:
-            # Procesar usando lento
-            lento += 1
-        rapido += 1
+        return i == len(s)
 ```
-
-3. Punteros en paralelo:
-
-```python
-def dosPunterosPalalelos(arr1, arr2):
-    p1 = 0
-    p2 = 0
-
-    while p1 < len(arr1) and p2 < len(arr2):
-        # Comparar arr1[p1] y arr2[p2]
-        if condicion:
-            p1 += 1
-        else:
-            p2 += 1
-```
-
-Problemas típicos donde se usa:
-
-1. Encontrar pares que suman un valor objetivo (en array ordenado)
-
-```python
-def encontrarParSuma(arr, objetivo):
-    izq = 0
-    der = len(arr) - 1
-
-    while izq < der:
-        suma = arr[izq] + arr[der]
-        if suma == objetivo:
-            return [izq, der]
-        elif suma < objetivo:
-            izq += 1
-        else:
-            der -= 1
-
-    return []
-```
-
-2. Detectar ciclos en una linked list:
-
-```python
-def detectarCiclo(head):
-    lento = rapido = head
-
-    while rapido and rapido.next:
-        lento = lento.next
-        rapido = rapido.next.next
-        if lento == rapido:
-            return True
-
-    return False
-```
-
-Tips para entrevistas:
-
-1. Identifica el patrón adecuado para tu problema
-2. Cuida las condiciones de parada del while
-3. Maneja casos edge: arrays vacíos, un solo elemento
-4. Verifica que los punteros no se crucen cuando no deben
-5. En arrays ordenados, dos punteros suele ser más eficiente que otras soluciones
-
-Usos comunes:
-
-- Encontrar pares/tripletas en arrays ordenados
-- Eliminar duplicados
-- Palingromos
-- Merge de arrays ordenados
-- Detectar ciclos
-- Encontrar el elemento del medio
-
-¿Te gustaría ver algún problema específico usando dos punteros?
