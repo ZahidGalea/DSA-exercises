@@ -1,70 +1,156 @@
-a hash map is an unordered data structure that stores key-value pairs. A hash map can add and remove elements in
-O
-(
-1
-)
-O(1), as well as update values associated with a key and check if a key exists, also in
-O
-(
-1
-)
-O(1). You can iterate over both the keys and values of a hash map, but the iteration won't necessarily follow any
-order (there are many implementations and this is language dependent for the built-in types).
+# Hash Map
 
-In terms of time complexity, hash maps blow arrays out of the water. The following operations are all
-O
-(
-1
-)
-O(1) for a hash map:
+A hash map is a data structure that stores key-value pairs with O(1) time complexity for basic operations.
 
-Add an element and associate it with a value
-Delete an element if it exists
-Check if an element exists
-A hash map also has many of the same useful properties as an array with the same time complexity:
+## Key Operations & Time Complexity
 
-Find length/number of elements
-Updating values
-Iterate over elements
+- Add element: O(1)
+- Remove element: O(1)
+- Update value: O(1)
+- Check if key exists: O(1)
+- Find length: O(1)
 
-### Disvantages
+## Advantages
 
-The biggest disadvantage of hash maps is that for smaller input sizes, they can be slower due to overhead. Because big O
-ignores constants, the
-O
-(
-1
-)
-O(1) time complexity can sometimes be deceiving - it's usually something more like
-O
-(
-10
-)
-O(10) because every key needs to go through the hash function, and there can also be collisions, which we will talk
-about in the next section.
+- Fast operations (constant time)
+- Flexible key types
+- Direct access to values
+- Useful for caching and counting
 
-Hash tables can also take up more space. Dynamic arrays are actually fixed-size arrays that resize themselves when they
-go beyond their capacity. Hash tables are also implemented using a fixed size array - remember that the size is a limit
-set by the programmer. The problem is, resizing a hash table is much more expensive because every existing key needs to
-be re-hashed, and also a hash table may use an array that is significantly larger than the number of elements stored,
-resulting in a huge waste of space. Let's say you chose your limit as 10,000 items, but you only end up storing 10.
-Okay, you could argue that 10,000 is too large, but then what if your next test case ends up needing to store 100,000
-elements? The point is, when you don't know how many elements you need to store, arrays are more flexible with resizing
-and not wasting space.
+## Disadvantages®
 
-### Collisions
+- Higher memory usage
+- Performance overhead for small datasets
+- Expensive resizing operations
+- Potential for collisions®
 
-When different keys convert to the same integer, it is called a collision. Without handling collisions, older keys will
-get overridden and data will be lost. There are multiple ways to handle collisions, but here we'll talk about a common
-one called chaining.
+## Collisions
 
-### Sets
+Collisions occur when different keys hash to the same value. Common solution:
 
-A set is another data structure that is very similar to a hash table. It uses the same mechanism for hashing keys into integers. The difference between a set and hash table is that sets do not map their keys to anything. Sets are more convenient to use when you only care about checking if elements exist. You can add, remove, and check if an element exists in a set all in 
-O
-(
-1
-)
-O(1).
+- Chaining: Store multiple key-value pairs in linked lists at each array position
 
-An important thing to note about sets is that they don't track frequency. If you have a set and add the same element 100 times, the first operation adds it and the next 99 do nothing.
+## Related: Sets
+
+- Similar to hash maps but only store keys (no values)
+- Used when only existence checking is needed
+- All operations are O(1)
+- Duplicates are automatically handled (only stored once)çççÇÇÇ 
+
+## Counting Elements with Hash Maps
+
+Example 1: You are given a string s and an integer k. Find the length of the longest substring that contains at most k distinct characters.
+
+For example, given s = "eceba" and k = 2, return 3. The longest substring with at most 2 distinct characters is "ece".
+
+```python
+from collections import defaultdict
+
+def find_longest_substring(s, k):
+    counts = defaultdict(int)
+    left = ans = 0
+    for right in range(len(s)):
+        counts[s[right]] += 1
+        while len(counts) > k:
+            counts[s[left]] -= 1
+            if counts[s[left]] == 0:
+                del counts[s[left]]
+            left += 1
+        
+        ans = max(ans, right - left + 1)
+    
+    return ans
+```
+
+Example 2: 2248. Intersection of Multiple Arrays
+
+Given a 2D array nums that contains n arrays of distinct integers, return a sorted array containing all the numbers that appear in all n arrays.
+
+For example, given nums = [[3,1,2,4,5],[1,2,3,4],[3,4,5,6]], return [3, 4]. 3 and 4 are the only numbers that are in all arrays.
+
+```python
+from collections import defaultdict
+
+def intersection(nums):
+    counts = defaultdict(int)
+    for arr in nums:
+        for num in arr:
+            counts[num] += 1
+    
+    ans = []
+    for num, count in counts.items():
+        if count == len(nums):
+            ans.append(num)
+    
+    return ans
+```
+
+Example 3: 1941. Check if All Characters Have Equal Number of Occurrences
+
+Given a string s, determine if all characters have the same frequency.
+
+For example, given s = "abacbc", return true. All characters appear twice. Given s = "aaabb", return false. "a" appears 3 times, "b" appears 2 times. 3 != 2.
+
+```python
+from collections import defaultdict
+
+class Solution:
+    def areOccurrencesEqual(self, s: str) -> bool:
+        counts = defaultdict(int)
+        for c in s:
+            counts[c] += 1
+        
+        frequencies = counts.values()
+        return len(set(frequencies)) == 1
+```
+```python
+from collections import Counter
+
+class Solution:
+    def areOccurrencesEqual(self, s: str) -> bool:
+        return len(set(Counter(s).values())) == 1
+```
+
+Example 4: 560. Subarray Sum Equals K
+
+Given an integer array nums and an integer k, find the number of subarrays whose sum is equal to k.
+
+```python
+from collections import defaultdict
+
+class Solution:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        counts = defaultdict(int)
+        counts[0] = 1
+        ans = curr = 0
+
+        for num in nums:
+            curr += num
+            ans += counts[curr - k]
+            counts[curr] += 1
+    
+        return ans
+```
+
+Example 5: 1248. Count Number of Nice Subarrays
+
+Given an array of positive integers nums and an integer k. Find the number of subarrays with exactly k odd numbers in them.
+
+For example, given nums = [1, 1, 2, 1, 1], k = 3, the answer is 2. The subarrays with 3 odd numbers in them are [1, 1, 2, 1, 1] and [1, 1, 2, 1, 1].
+
+```python
+from collections import defaultdict
+
+class Solution:
+    def numberOfSubarrays(self, nums: List[int], k: int) -> int:
+        counts = defaultdict(int)
+        counts[0] = 1
+        ans = curr = 0
+        
+        for num in nums:
+            curr += num % 2
+            ans += counts[curr - k]
+            counts[curr] += 1
+
+        return ans
+```
